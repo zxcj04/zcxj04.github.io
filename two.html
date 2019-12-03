@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Tic-tac-toe</title>
+    <style type="text/CSS">
+        table, th, td{
+				border: 1px solid black;
+				border-collapse: collapse;
+				font-family: Calibri;
+				font-size: 48px;
+        }
+        caption {
+            color: navy;
+        }
+        tbody tr {
+            height: 100px;
+        }
+        td {
+            width: 100px;
+            text-align: center;
+        }
+    </style>
+    <script>
+
+        var parse = ["X", "O"];
+
+        var now = 0;
+
+        var cells = [''];
+
+        var end = false;
+
+        var replay = [];
+
+        var but;
+
+        function init()
+        {
+            var theCell = document.getElementsByClassName("cell");
+
+            but = document.getElementById("replay");
+
+            but.addEventListener("click", replaying, false);
+
+            for (let i = 0; i < theCell.length; i++) 
+            {
+                theCell[i].addEventListener("click", occupy, false);
+            }
+
+            for(let i = 0 ; i < 3 ; i++)
+            {
+                for(let j = 0 ; j < 3 ; j++)
+                {
+                    cells.push(document.getElementById(i + ' ' + j));
+                }
+            }
+        }
+
+        function occupy(ev)
+        {
+            
+
+            if(ev.target.innerHTML == "")
+            {
+                if(end)
+                {
+                    return;
+                }
+
+                ev.target.innerHTML = parse[now];
+
+                if(now)
+                {
+                    now = 0;
+                }
+                else
+                {
+                    now = 1;
+                }
+
+                replay.push(ev.target);
+
+                var who = isWin()
+
+                if(who == 'X' || who == 'O')
+                {
+                    end = true;
+
+                    window.setTimeout(function(){alert(who + ' wins!');}, 200);
+                    
+                    but.removeAttribute("disabled");
+                }
+                else if(who == 3)
+                {
+                    end = true;
+                 
+                    window.setTimeout(function(){alert("Tie!");}, 200);
+                    
+                    but.removeAttribute("disabled");
+                }
+            }
+            else
+            {
+                alert("Not allowed");
+            }
+        }
+
+        var letI = 0;
+
+        var inNow = 0;
+
+        var inter;
+
+        function replaying()
+        {
+            letI = 0;
+            inNow = 0;
+            end = false;
+
+            for(let i = 1 ; i <= 9 ; i++)
+            {
+                cells[i].innerHTML = "";
+            }
+
+            inter = setInterval(function(){draw()}, 300);
+        }
+
+        function draw()
+        {
+            if(end)
+            {
+                clearInterval(inter);
+
+                return;
+            }
+
+            replay[letI].innerHTML = parse[inNow];
+
+            if(inNow)
+            {
+                inNow = 0;
+            }
+            else
+            {
+                inNow = 1;
+            }
+
+            var who = isWin()
+
+            if(who == 'X' || who == 'O')
+            {
+                end = true;
+
+                window.setTimeout(function(){alert(who + ' wins!');}, 200);
+            }
+            else if(who == 3)
+            {
+                end = true;
+                
+                window.setTimeout(function(){alert("Tie!");}, 200);
+            }
+
+            letI++;
+        }
+
+        function isWin()
+        {
+            
+
+            var full = true;
+
+
+            if(cells[1].innerHTML == cells[2].innerHTML && cells[2].innerHTML == cells[3].innerHTML)
+            {
+                return cells[1].innerHTML;
+            }
+            else if(cells[4].innerHTML == cells[5].innerHTML && cells[5].innerHTML == cells[6].innerHTML)
+            {
+                return cells[4].innerHTML;
+            }
+            else if(cells[7].innerHTML == cells[8].innerHTML && cells[8].innerHTML == cells[9].innerHTML)
+            {
+                return cells[7].innerHTML;
+            }
+            else if(cells[1].innerHTML == cells[4].innerHTML && cells[4].innerHTML == cells[7].innerHTML)
+            {
+                return cells[1].innerHTML;
+            }
+            else if(cells[2].innerHTML == cells[5].innerHTML && cells[5].innerHTML == cells[8].innerHTML)
+            {
+                return cells[2].innerHTML;
+            }
+            else if(cells[3].innerHTML == cells[6].innerHTML && cells[6].innerHTML == cells[9].innerHTML)
+            {
+                return cells[3].innerHTML;
+            }
+            else if(cells[1].innerHTML == cells[5].innerHTML && cells[5].innerHTML == cells[9].innerHTML)
+            {
+                return cells[1].innerHTML;
+            }
+            else if(cells[3].innerHTML == cells[5].innerHTML && cells[5].innerHTML == cells[7].innerHTML)
+            {
+                return cells[3].innerHTML;
+            }
+
+
+            for(let i = 1 ; i <= 9 ; i++)
+            {
+                if(cells[i].innerHTML == "")
+                {
+                    full = false;
+
+                    break;
+                }
+            }
+
+            if(full)
+            {
+                return 3;
+            }
+
+            return 0;
+        }
+
+        window.addEventListener("load", init, false);
+    </script>
+</head>
+
+<body>
+    <table id="table">
+        <caption>Tic-Tac-Toe</caption>
+        <tbody>
+            <tr>
+                <td id="0 0" class="cell"></td>
+                <td id="0 1" class="cell"></td>
+                <td id="0 2" class="cell"></td>
+            </tr>
+            <tr>
+                <td id="1 0" class="cell"></td>
+                <td id="1 1" class="cell"></td>
+                <td id="1 2" class="cell"></td>
+            </tr>
+            <tr>
+                <td id="2 0" class="cell"></td>
+                <td id="2 1" class="cell"></td>
+                <td id="2 2" class="cell"></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <input id="replay" type="button" value="Replay" disabled>
+                    <input id="new" type="button" value="New Game" onclick="location.reload()">
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</body>
+
+</html>

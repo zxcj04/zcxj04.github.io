@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset = "utf-8">
+      <title>Not Simple Drawing Program</title>
+      <script>
+            function createCanvas()
+            {
+                var side = 100;
+                var tbody = document.getElementById( "tablebody" );
+                
+                for ( var i = 0; i < side; ++i )
+                {
+                    var row = document.createElement( "tr" );
+                    
+                    for ( var j = 0; j < side; ++j )
+                    {
+                        var cell = document.createElement( "td" );
+
+                        cell.setAttribute("id", i + ' ' + j);
+
+                        row.appendChild( cell );
+                    } // end for
+
+                    tbody.appendChild( row );
+                } // end for
+
+                // register mousemove listener for the table
+                document.getElementById( "canvas" ).addEventListener( 
+                    "mousemove", processMouseMove, false );
+            } // end function createCanvas
+
+            // processes the onmousemove event
+            function processMouseMove( e )
+            {        
+
+                if ( e.target.tagName.toLowerCase() == "td" )
+                {
+                    var inp = "init";
+
+                    if( e.buttons == 1 )
+                    {
+                        e.target.setAttribute( "class", "" );
+
+                        inp = "";
+                    }
+
+                    // turn the cell blue if the Ctrl key is pressed
+                    if ( e.ctrlKey )
+                    {
+                        e.target.setAttribute( "class", "blue" );
+
+                        inp = "blue";
+                    } // end if
+
+                    // turn the cell red if the Shift key is pressed
+                    if ( e.shiftKey )
+                    {
+                        e.target.setAttribute( "class", "red" );
+
+                        inp = "red";
+                    } // end if
+
+                    if( e.altKey )
+                    {
+                        e.target.setAttribute( "class", "black" );
+
+                        inp = "black";
+                    }
+
+                    if(inp != "init")
+                    {
+                        localStorage.setItem(e.target.id, inp);
+                    }
+
+                } // end if
+            } // end function processMouseMove
+
+            function clearPoint()
+            {
+                var len = localStorage.length;
+
+                for(let i = 0 ; i < len ; i++)
+                {
+                    let now = localStorage.key(i);
+
+                    document.getElementById(now).setAttribute("class", "");
+                }
+
+                localStorage.clear();
+            }
+
+            function drawinit()
+            {
+                var len = localStorage.length;
+
+                for(let i = 0 ; i < len ; i++)
+                {
+                    let now = localStorage.key(i);
+
+                    document.getElementById(now).setAttribute("class", localStorage.getItem(now));
+                }
+            }
+
+            function init()
+            {
+                createCanvas();
+
+                document.getElementById("clearPoint").addEventListener("click", clearPoint, false);
+
+                drawinit();
+            }
+
+            window.addEventListener( "load", init, false );
+      </script>
+      <style>
+        #canvas 
+        { 
+            width: 400px;
+            border: 1px solid #999999;
+            border-collapse: collapse 
+        }
+        td      
+        { 
+            width: 4px; 
+            height: 4px; 
+            margin: 0px; 
+            padding: 0px; 
+        }
+        .blue   
+        { 
+            background-color: blue; 
+        }
+        .red    
+        { 
+            background-color: red; 
+        }
+        .black
+        {
+            background-color: black;
+        }
+      </style>
+   </head>
+   <body>
+      <table id = "canvas">
+         <caption>Hold <em>Ctrl</em> to draw blue. 
+            <em>Shift</em> to draw red.
+            <em>Alt</em> to draw black.<br>
+        Press mouse to erase point
+        </caption>
+         <tbody id = "tablebody"></tbody>
+      </table>
+
+      <input type="button" id="clearPoint" value="Clear Canvas">
+   </body>
+</html>
